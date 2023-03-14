@@ -31,24 +31,24 @@ RUN set -ex \
     && ssh-keyscan -t rsa,dsa -H bitbucket.org >> ~/.ssh/known_hosts \
     && chmod 600 ~/.ssh/known_hosts \
     && apt-get install -y -qq --no-install-recommends \
-          apt-utils asciidoc autoconf automake build-essential bzip2 \
-          bzr curl dirmngr docbook-xml docbook-xsl dpkg-dev \
-          e2fsprogs expect fakeroot file g++ gcc gettext gettext-base \
-          groff gzip iptables jq less libapr1 libaprutil1 \
-          libargon2-0-dev libbz2-dev libc6-dev libcurl4-openssl-dev \
-          libdb-dev libdbd-sqlite3-perl libdbi-perl libdpkg-perl \
-          libedit-dev liberror-perl libevent-dev libffi-dev libgeoip-dev \
-          libglib2.0-dev libhttp-date-perl libio-pty-perl libjpeg-dev \
-          libkrb5-dev liblzma-dev libmagickcore-dev libmagickwand-dev \
-          libmysqlclient-dev libncurses5-dev libncursesw5-dev libonig-dev \
-          libpq-dev libreadline-dev libserf-1-1 libsodium-dev libsqlite3-dev libssl-dev \
-          libsvn1 libsvn-perl libtcl8.6 libtidy-dev libtimedate-perl \
-          libtool libwebp-dev libxml2-dev libxml2-utils libxslt1-dev \
-          libyaml-dev libyaml-perl llvm locales make mlocate \
-          netbase openssl patch pkg-config procps python3-configobj \
-          python3-openssl rsync sgml-base sgml-data \
-          tar tcl tcl8.6 tk tk-dev unzip wget xfsprogs xml-core xmlto xsltproc \
-          libzip-dev vim xvfb xz-utils zip zlib1g-dev \
+    apt-utils asciidoc autoconf automake build-essential bzip2 \
+    bzr curl dirmngr docbook-xml docbook-xsl dpkg-dev \
+    e2fsprogs expect fakeroot file g++ gcc gettext gettext-base \
+    groff gzip iptables jq less libapr1 libaprutil1 \
+    libargon2-0-dev libbz2-dev libc6-dev libcurl4-openssl-dev \
+    libdb-dev libdbd-sqlite3-perl libdbi-perl libdpkg-perl \
+    libedit-dev liberror-perl libevent-dev libffi-dev libgeoip-dev \
+    libglib2.0-dev libhttp-date-perl libio-pty-perl libjpeg-dev \
+    libkrb5-dev liblzma-dev libmagickcore-dev libmagickwand-dev \
+    libmysqlclient-dev libncurses5-dev libncursesw5-dev libonig-dev \
+    libpq-dev libreadline-dev libserf-1-1 libsodium-dev libsqlite3-dev libssl-dev \
+    libsvn1 libsvn-perl libtcl8.6 libtidy-dev libtimedate-perl \
+    libtool libwebp-dev libxml2-dev libxml2-utils libxslt1-dev \
+    libyaml-dev libyaml-perl llvm locales make mlocate \
+    netbase openssl patch pkg-config procps python3-configobj \
+    python3-openssl rsync sgml-base sgml-data \
+    tar tcl tcl8.6 tk tk-dev unzip wget xfsprogs xml-core xmlto xsltproc \
+    libzip-dev vim xvfb xz-utils zip zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
 ENV LC_CTYPE="C.UTF-8"
@@ -62,18 +62,18 @@ FROM core AS tools
 
 # Install stunnel
 RUN set -ex \
-   && STUNNEL_VERSION=5.67 \
-   && STUNNEL_TAR=stunnel-$STUNNEL_VERSION.tar.gz \
-   && STUNNEL_SHA256="3086939ee6407516c59b0ba3fbf555338f9d52f459bcab6337c0f00e91ea8456" \
-   && curl -o $STUNNEL_TAR https://www.usenix.org.uk/mirrors/stunnel/archive/5.x/$STUNNEL_TAR && echo "$STUNNEL_SHA256 $STUNNEL_TAR" | sha256sum --check && tar xfz $STUNNEL_TAR \
-   && cd stunnel-$STUNNEL_VERSION \
-   && ./configure \
-   && make -j4 \
-   && make install \
-   && openssl genrsa -out key.pem 2048 \
-   && openssl req -new -x509 -key key.pem -out cert.pem -days 1095 -subj "/C=US/ST=Washington/L=Seattle/O=Amazon/OU=Codebuild/CN=codebuild.amazon.com" \
-   && cat key.pem cert.pem >> /usr/local/etc/stunnel/stunnel.pem \
-   && cd .. && rm -rf stunnel-${STUNNEL_VERSION}*
+    && STUNNEL_VERSION=5.67 \
+    && STUNNEL_TAR=stunnel-$STUNNEL_VERSION.tar.gz \
+    && STUNNEL_SHA256="3086939ee6407516c59b0ba3fbf555338f9d52f459bcab6337c0f00e91ea8456" \
+    && curl -o $STUNNEL_TAR https://www.usenix.org.uk/mirrors/stunnel/archive/5.x/$STUNNEL_TAR && echo "$STUNNEL_SHA256 $STUNNEL_TAR" | sha256sum --check && tar xfz $STUNNEL_TAR \
+    && cd stunnel-$STUNNEL_VERSION \
+    && ./configure \
+    && make -j4 \
+    && make install \
+    && openssl genrsa -out key.pem 2048 \
+    && openssl req -new -x509 -key key.pem -out cert.pem -days 1095 -subj "/C=US/ST=Washington/L=Seattle/O=Amazon/OU=Codebuild/CN=codebuild.amazon.com" \
+    && cat key.pem cert.pem >> /usr/local/etc/stunnel/stunnel.pem \
+    && cd .. && rm -rf stunnel-${STUNNEL_VERSION}*
 
 # AWS Tools
 # https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI_installation.html
@@ -103,14 +103,14 @@ RUN curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscli
 # Dotnet
 ENV PATH "/root/.dotnet/:/root/.dotnet/tools/:$PATH"
 RUN set -ex  \
-&& wget -qO /usr/local/bin/dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
-&& chmod +x /usr/local/bin/dotnet-install.sh
+    && wget -qO /usr/local/bin/dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
+    && chmod +x /usr/local/bin/dotnet-install.sh
 
 #nodejs
 ARG SRC_DIR="/usr/src"
 ARG N_SRC_DIR="$SRC_DIR/n"
 RUN git clone https://github.com/tj/n $N_SRC_DIR \
-     && cd $N_SRC_DIR && make install 
+    && cd $N_SRC_DIR && make install 
 
 #ruby
 ARG RBENV_SRC_DIR="/usr/local/rbenv"
@@ -148,8 +148,8 @@ ENV DOTNET_ROOT="/root/.dotnet"
 
 # Add .NET Core 6 Global Tools install folder to PATH
 RUN  /usr/local/bin/dotnet-install.sh -v $DOTNET_6_SDK_VERSION \
-     && dotnet --list-sdks \
-     && rm -rf /tmp/*
+    && dotnet --list-sdks \
+    && rm -rf /tmp/*
 
 # Trigger the population of the local package cache
 ENV NUGET_XMLDOC_MODE skip
@@ -182,11 +182,11 @@ RUN set -ex \
 ENV NODE_16_VERSION="16.19.0"
 
 RUN  n $NODE_16_VERSION && npm install --save-dev -g -f grunt && npm install --save-dev -g -f grunt-cli && npm install --save-dev -g -f webpack \
-     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-     && apt-get update && apt-get install -y -qq --no-install-recommends yarn \
-     && yarn --version \
-     && cd / && rm -rf $N_SRC_DIR && rm -rf /tmp/*
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+    && apt-get update && apt-get install -y -qq --no-install-recommends yarn \
+    && yarn --version \
+    && cd / && rm -rf $N_SRC_DIR && rm -rf /tmp/*
 
 #****************      END NODEJS     ****************************************************
 
@@ -227,10 +227,10 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 #****************      END PHP     ****************************************************
 
 #****************     GOLANG     ****************************************************
-ENV GOLANG_18_VERSION="1.18.9"
+ENV GOLANG_20_VERSION="1.20.0"
 
-RUN goenv install $GOLANG_18_VERSION && rm -rf /tmp/* && \
-    goenv global  $GOLANG_18_VERSION && \
+RUN goenv install $GOLANG_20_VERSION && rm -rf /tmp/* && \
+    goenv global  $GOLANG_20_VERSION && \
     go env -w GO111MODULE=auto
 
 RUN go get -u github.com/golang/dep/cmd/dep
@@ -279,11 +279,11 @@ RUN set -ex \
     && dpkg --add-architecture i386 \
     && apt-get update \
     && for tool_path in $JAVA_HOME/bin/*; do \
-          tool=`basename $tool_path`; \
-          update-alternatives --install /usr/bin/$tool $tool $tool_path 10000; \
-          update-alternatives --set $tool $tool_path; \
-        done \
-     && rm $JAVA_HOME/lib/security/cacerts && ln -s /etc/ssl/certs/java/cacerts $JAVA_HOME/lib/security/cacerts \
+    tool=`basename $tool_path`; \
+    update-alternatives --install /usr/bin/$tool $tool $tool_path 10000; \
+    update-alternatives --set $tool $tool_path; \
+    done \
+    && rm $JAVA_HOME/lib/security/cacerts && ln -s /etc/ssl/certs/java/cacerts $JAVA_HOME/lib/security/cacerts \
     # Install Ant
     && curl -LSso /var/tmp/apache-ant-$ANT_VERSION-bin.tar.gz https://archive.apache.org/dist/ant/binaries/apache-ant-$ANT_VERSION-bin.tar.gz  \
     && echo "$ANT_DOWNLOAD_SHA512 /var/tmp/apache-ant-$ANT_VERSION-bin.tar.gz" | sha512sum -c - \
@@ -303,19 +303,19 @@ RUN set -ex \
     # Install Gradle
     && mkdir -p $GRADLE_PATH \
     && for version in $INSTALLED_GRADLE_VERSIONS; do { \
-       wget -q "https://services.gradle.org/distributions/gradle-$version-all.zip" -O "$GRADLE_PATH/gradle-$version-all.zip" \
-       && unzip -q "$GRADLE_PATH/gradle-$version-all.zip" -d /usr/local \
-       && echo "$GRADLE_DOWNLOADS_SHA256" | grep "$version" | sed "s|$version|$GRADLE_PATH/gradle-$version-all.zip|" | sha256sum -c - \
-       && rm "$GRADLE_PATH/gradle-$version-all.zip" \
-       && mkdir "/tmp/gradle-$version" \
-       && "/usr/local/gradle-$version/bin/gradle" -p "/tmp/gradle-$version" init \
-       && "/usr/local/gradle-$version/bin/gradle" -p "/tmp/gradle-$version" wrapper \
-       # Android Studio uses the "-all" distribution for it's wrapper script.
-       && perl -pi -e "s/gradle-$version-bin.zip/gradle-$version-all.zip/" "/tmp/gradle-$version/gradle/wrapper/gradle-wrapper.properties" \
-       && "/tmp/gradle-$version/gradlew" -p "/tmp/gradle-$version" init \
-       && rm -rf "/tmp/gradle-$version" \
-       && if [ "$version" != "$GRADLE_VERSION" ]; then rm -rf "/usr/local/gradle-$version"; fi; \
-     }; done \
+    wget -q "https://services.gradle.org/distributions/gradle-$version-all.zip" -O "$GRADLE_PATH/gradle-$version-all.zip" \
+    && unzip -q "$GRADLE_PATH/gradle-$version-all.zip" -d /usr/local \
+    && echo "$GRADLE_DOWNLOADS_SHA256" | grep "$version" | sed "s|$version|$GRADLE_PATH/gradle-$version-all.zip|" | sha256sum -c - \
+    && rm "$GRADLE_PATH/gradle-$version-all.zip" \
+    && mkdir "/tmp/gradle-$version" \
+    && "/usr/local/gradle-$version/bin/gradle" -p "/tmp/gradle-$version" init \
+    && "/usr/local/gradle-$version/bin/gradle" -p "/tmp/gradle-$version" wrapper \
+    # Android Studio uses the "-all" distribution for it's wrapper script.
+    && perl -pi -e "s/gradle-$version-bin.zip/gradle-$version-all.zip/" "/tmp/gradle-$version/gradle/wrapper/gradle-wrapper.properties" \
+    && "/tmp/gradle-$version/gradlew" -p "/tmp/gradle-$version" init \
+    && rm -rf "/tmp/gradle-$version" \
+    && if [ "$version" != "$GRADLE_VERSION" ]; then rm -rf "/usr/local/gradle-$version"; fi; \
+    }; done \
     # Install default GRADLE_VERSION to path
     && ln -s /usr/local/gradle-$GRADLE_VERSION/bin/gradle /usr/bin/gradle \
     && rm -rf $GRADLE_PATH \
@@ -372,7 +372,7 @@ RUN n $NODE_16_VERSION
 RUN pyenv  global $PYTHON_310_VERSION
 RUN phpenv global $PHP_81_VERSION
 RUN rbenv  global $RUBY_31_VERSION
-RUN goenv global  $GOLANG_18_VERSION
+RUN goenv global  $GOLANG_20_VERSION
 
 # Configure SSH
 COPY ssh_config /root/.ssh/config
