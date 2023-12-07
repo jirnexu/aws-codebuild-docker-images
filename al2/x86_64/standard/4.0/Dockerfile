@@ -28,18 +28,18 @@ RUN set -ex \
     && amazon-linux-extras enable docker \
     && yum groupinstall -y -q "Development tools" \
     && yum install -y -q \
-           GeoIP-devel ImageMagick asciidoc bzip2-devel bzr bzrtools cvs cvsps \
-           docbook-dtds docbook-style-xsl dpkg-dev e2fsprogs expat-devel expect fakeroot \
-           glib2-devel groff gzip icu iptables jq krb5-server libargon2-devel \
-           libcurl-devel libdb-devel libedit-devel libevent-devel libffi-devel \
-           libicu-devel libjpeg-devel libpng-devel libserf libsqlite3x-devel \
-           libtidy-devel libunwind libwebp-devel libxml2-devel libxslt libxslt-devel \
-           libyaml-devel libzip-devel mariadb-devel mercurial mlocate mono-devel \
-           ncurses-devel oniguruma-devel openssl openssl-devel perl-DBD-SQLite \
-           perl-DBI perl-HTTP-Date perl-IO-Pty-Easy perl-TimeDate perl-YAML-LibYAML \
-           postgresql-devel procps-ng python-configobj readline-devel rsync sgml-common \
-           subversion-perl tar tcl tk vim wget which xfsprogs xmlto xorg-x11-server-Xvfb xz-devel \
-           amazon-ecr-credential-helper \
+    GeoIP-devel ImageMagick asciidoc bzip2-devel bzr bzrtools cvs cvsps \
+    docbook-dtds docbook-style-xsl dpkg-dev e2fsprogs expat-devel expect fakeroot \
+    glib2-devel groff gzip icu iptables jq krb5-server libargon2-devel \
+    libcurl-devel libdb-devel libedit-devel libevent-devel libffi-devel \
+    libicu-devel libjpeg-devel libpng-devel libserf libsqlite3x-devel \
+    libtidy-devel libunwind libwebp-devel libxml2-devel libxslt libxslt-devel \
+    libyaml-devel libzip-devel mariadb-devel mercurial mlocate mono-devel \
+    ncurses-devel oniguruma-devel openssl openssl-devel perl-DBD-SQLite \
+    perl-DBI perl-HTTP-Date perl-IO-Pty-Easy perl-TimeDate perl-YAML-LibYAML \
+    postgresql-devel procps-ng python-configobj readline-devel rsync sgml-common \
+    subversion-perl tar tcl tk vim wget which xfsprogs xmlto xorg-x11-server-Xvfb xz-devel \
+    amazon-ecr-credential-helper \
     && rm /etc/yum.repos.d/mono-centos7-stable.repo
 
 RUN useradd codebuild-user
@@ -50,31 +50,31 @@ FROM core AS tools
 
 # Install Git
 RUN set -ex \
-   && GIT_VERSION=2.39.1 \
-   && GIT_TAR_FILE=git-$GIT_VERSION.tar.gz \
-   && GIT_SRC=https://github.com/git/git/archive/v${GIT_VERSION}.tar.gz  \
-   && curl -L -o $GIT_TAR_FILE $GIT_SRC \
-   && tar zxf $GIT_TAR_FILE \
-   && cd git-$GIT_VERSION \
-   && make -j4 prefix=/usr \
-   && make install prefix=/usr \
-   && cd .. && rm -rf git-$GIT_VERSION \
-   && rm -rf $GIT_TAR_FILE /tmp/*
+    && GIT_VERSION=2.39.1 \
+    && GIT_TAR_FILE=git-$GIT_VERSION.tar.gz \
+    && GIT_SRC=https://github.com/git/git/archive/v${GIT_VERSION}.tar.gz  \
+    && curl -L -o $GIT_TAR_FILE $GIT_SRC \
+    && tar zxf $GIT_TAR_FILE \
+    && cd git-$GIT_VERSION \
+    && make -j4 prefix=/usr \
+    && make install prefix=/usr \
+    && cd .. && rm -rf git-$GIT_VERSION \
+    && rm -rf $GIT_TAR_FILE /tmp/*
 
 # Install stunnel
 RUN set -ex \
-   && STUNNEL_VERSION=5.67 \
-   && STUNNEL_TAR=stunnel-$STUNNEL_VERSION.tar.gz \
-   && STUNNEL_SHA256="3086939ee6407516c59b0ba3fbf555338f9d52f459bcab6337c0f00e91ea8456" \
-   && curl -o $STUNNEL_TAR https://www.usenix.org.uk/mirrors/stunnel/archive/5.x/$STUNNEL_TAR && echo "$STUNNEL_SHA256 $STUNNEL_TAR" | sha256sum --check && tar xfz $STUNNEL_TAR \
-   && cd stunnel-$STUNNEL_VERSION \
-   && ./configure \
-   && make -j4 \
-   && make install \
-   && openssl genrsa -out key.pem 2048 \
-   && openssl req -new -x509 -key key.pem -out cert.pem -days 1095 -subj "/C=US/ST=Washington/L=Seattle/O=Amazon/OU=Codebuild/CN=codebuild.amazon.com" \
-   && cat key.pem cert.pem >> /usr/local/etc/stunnel/stunnel.pem \
-   && cd .. && rm -rf stunnel-${STUNNEL_VERSION}*
+    && STUNNEL_VERSION=5.67 \
+    && STUNNEL_TAR=stunnel-$STUNNEL_VERSION.tar.gz \
+    && STUNNEL_SHA256="3086939ee6407516c59b0ba3fbf555338f9d52f459bcab6337c0f00e91ea8456" \
+    && curl -o $STUNNEL_TAR https://www.usenix.org.uk/mirrors/stunnel/archive/5.x/$STUNNEL_TAR && echo "$STUNNEL_SHA256 $STUNNEL_TAR" | sha256sum --check && tar xfz $STUNNEL_TAR \
+    && cd stunnel-$STUNNEL_VERSION \
+    && ./configure \
+    && make -j4 \
+    && make install \
+    && openssl genrsa -out key.pem 2048 \
+    && openssl req -new -x509 -key key.pem -out cert.pem -days 1095 -subj "/C=US/ST=Washington/L=Seattle/O=Amazon/OU=Codebuild/CN=codebuild.amazon.com" \
+    && cat key.pem cert.pem >> /usr/local/etc/stunnel/stunnel.pem \
+    && cd .. && rm -rf stunnel-${STUNNEL_VERSION}*
 
 # AWS Tools
 # https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI_installation.html
@@ -92,13 +92,13 @@ RUN set -ex \
 ## Dotnet
 ENV PATH="/root/.dotnet/:/root/.dotnet/tools/:$PATH"
 RUN set -ex  \
-&& wget -qO /usr/local/bin/dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
-&& chmod +x /usr/local/bin/dotnet-install.sh
+    && wget -qO /usr/local/bin/dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
+    && chmod +x /usr/local/bin/dotnet-install.sh
 
 ##nodejs
 ENV N_SRC_DIR="$SRC_DIR/n"
 RUN git clone https://github.com/tj/n $N_SRC_DIR \
-     && cd $N_SRC_DIR && make install
+    && cd $N_SRC_DIR && make install
 
 ##ruby
 ENV RBENV_SRC_DIR="/usr/local/rbenv"
@@ -137,13 +137,13 @@ ENV JAVA_17_HOME="/usr/lib/jvm/java-17-amazon-corretto.x86_64" \
     JRE_17_HOME="/usr/lib/jvm/java-17-amazon-corretto.x86_64" \
     ANT_VERSION=1.10.12 \
     MAVEN_HOME="/opt/maven" \
-    MAVEN_VERSION=3.8.7 \
+    MAVEN_VERSION=3.8.8 \
     INSTALLED_GRADLE_VERSIONS="7.6" \
     GRADLE_VERSION=7.6 \
     SBT_VERSION=1.8.2 \
     GRADLE_PATH="$SRC_DIR/gradle" \
     ANT_DOWNLOAD_SHA512="2287dc5cfc21043c14e5413f9afb1c87c9f266ec2a9ba2d3bf2285446f6e4ccb59b558bf2e5c57911a05dfa293c7d5c7ad60ac9f744ba11406f4e6f9a27b2403" \
-    MAVEN_DOWNLOAD_SHA512="21c2be0a180a326353e8f6d12289f74bc7cd53080305f05358936f3a1b6dd4d91203f4cc799e81761cf5c53c5bbe9dcc13bdb27ec8f57ecf21b2f9ceec3c8d27" \
+    MAVEN_DOWNLOAD_SHA512="332088670d14fa9ff346e6858ca0acca304666596fec86eea89253bd496d3c90deae2be5091be199f48e09d46cec817c6419d5161fb4ee37871503f472765d00" \
     GRADLE_DOWNLOADS_SHA256="312eb12875e1747e05c2f81a4789902d7e4ec5defbd1eefeaccc08acf096505d 7.6" \
     SBT_DOWNLOAD_SHA256="1f65344da074dbd66dfefa93c0eff8d319d772e5cad47fcbeb6ae178bbdf4686" \
     LOG4J_UNSAFE_VERSIONS="2.11.1 1.2.8"
@@ -160,10 +160,10 @@ RUN set -x \
     && yum install -y -q java-17-amazon-corretto java-17-amazon-corretto-devel \
     && update-ca-trust \
     && for tool_path in $JAVA_HOME/bin/*; do \
-          tool=`basename $tool_path`; \
-          update-alternatives --install /usr/bin/$tool $tool $tool_path 10000; \
-          update-alternatives --set $tool $tool_path; \
-        done \
+    tool=`basename $tool_path`; \
+    update-alternatives --install /usr/bin/$tool $tool $tool_path 10000; \
+    update-alternatives --set $tool $tool_path; \
+    done \
     && rm $JAVA_HOME/lib/security/cacerts && ln -s /etc/pki/java/cacerts $JAVA_HOME/lib/security/cacerts \
     # Install Ant
     && curl -LSso /var/tmp/apache-ant-$ANT_VERSION-bin.tar.gz https://archive.apache.org/dist/ant/binaries/apache-ant-$ANT_VERSION-bin.tar.gz  \
@@ -184,19 +184,19 @@ RUN set -ex \
     # Install Gradle
     && mkdir -p $GRADLE_PATH \
     && for version in $INSTALLED_GRADLE_VERSIONS; do { \
-       wget -q "https://services.gradle.org/distributions/gradle-$version-all.zip" -O "$GRADLE_PATH/gradle-$version-all.zip" \
-       && unzip -q "$GRADLE_PATH/gradle-$version-all.zip" -d /usr/local \
-       && echo -e "$GRADLE_DOWNLOADS_SHA256" | grep "$version" | sed "s|$version|$GRADLE_PATH/gradle-$version-all.zip|" | sha256sum -c - \
-       && rm "$GRADLE_PATH/gradle-$version-all.zip" \
-       && mkdir "/tmp/gradle-$version" \
-       && "/usr/local/gradle-$version/bin/gradle" -p "/tmp/gradle-$version" init \
-       && "/usr/local/gradle-$version/bin/gradle" -p "/tmp/gradle-$version" wrapper \
-       # Android Studio uses the "-all" distribution for it's wrapper script.
-       && perl -pi -e "s/gradle-$version-bin.zip/gradle-$version-all.zip/" "/tmp/gradle-$version/gradle/wrapper/gradle-wrapper.properties" \
-       && "/tmp/gradle-$version/gradlew" -p "/tmp/gradle-$version" init \
-       && rm -rf "/tmp/gradle-$version" \
-       && if [ "$version" != "$GRADLE_VERSION" ]; then rm -rf "/usr/local/gradle-$version"; fi; \
-     }; done \
+    wget -q "https://services.gradle.org/distributions/gradle-$version-all.zip" -O "$GRADLE_PATH/gradle-$version-all.zip" \
+    && unzip -q "$GRADLE_PATH/gradle-$version-all.zip" -d /usr/local \
+    && echo -e "$GRADLE_DOWNLOADS_SHA256" | grep "$version" | sed "s|$version|$GRADLE_PATH/gradle-$version-all.zip|" | sha256sum -c - \
+    && rm "$GRADLE_PATH/gradle-$version-all.zip" \
+    && mkdir "/tmp/gradle-$version" \
+    && "/usr/local/gradle-$version/bin/gradle" -p "/tmp/gradle-$version" init \
+    && "/usr/local/gradle-$version/bin/gradle" -p "/tmp/gradle-$version" wrapper \
+    # Android Studio uses the "-all" distribution for it's wrapper script.
+    && perl -pi -e "s/gradle-$version-bin.zip/gradle-$version-all.zip/" "/tmp/gradle-$version/gradle/wrapper/gradle-wrapper.properties" \
+    && "/tmp/gradle-$version/gradlew" -p "/tmp/gradle-$version" init \
+    && rm -rf "/tmp/gradle-$version" \
+    && if [ "$version" != "$GRADLE_VERSION" ]; then rm -rf "/usr/local/gradle-$version"; fi; \
+    }; done \
     # Install default GRADLE_VERSION to path
     && ln -s /usr/local/gradle-$GRADLE_VERSION/bin/gradle /usr/bin/gradle \
     && rm -rf $GRADLE_PATH \
@@ -253,15 +253,15 @@ RUN set -ex \
 
 #****************      NODEJS     ****************************************************
 
-ENV NODE_16_VERSION="16.19.0"
+ENV NODE_18_VERSION="18.15.0"
 
-RUN  n $NODE_16_VERSION && npm install --save-dev -g -f grunt && npm install --save-dev -g -f grunt-cli && npm install --save-dev -g -f webpack \
-     && curl -sSL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo \
-     && rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg \
-     && yum install -y https://download-ib01.fedoraproject.org/pub/epel/8/Modular/x86_64/Packages/l/libuv-1.43.0-2.module_el8+13804+34326f90.x86_64.rpm \
-     && yum install -y -q yarn \
-     && yarn --version \
-     && cd / && rm -rf $N_SRC_DIR && rm -rf /tmp/*
+RUN  n $NODE_18_VERSION && npm install --save-dev -g -f grunt && npm install --save-dev -g -f grunt-cli && npm install --save-dev -g -f webpack \
+    && curl -sSL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo \
+    && rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg \
+    && yum install -y https://download-ib01.fedoraproject.org/pub/epel/8/Modular/x86_64/Packages/l/libuv-1.43.0-2.module_el8+13804+34326f90.x86_64.rpm \
+    && yum install -y -q yarn \
+    && yarn --version \
+    && cd / && rm -rf $N_SRC_DIR && rm -rf /tmp/*
 
 #****************      END NODEJS     ****************************************************
 
@@ -301,12 +301,12 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 #****************      END PHP     ****************************************************
 
 #****************     GOLANG     ****************************************************
-ENV GOLANG_18_VERSION="1.18.9"
+ENV GOLANG_20_VERSION="1.20.0"
 ENV GOENV_DISABLE_GOPATH=1
 ENV GOPATH="/go"
 
-RUN goenv install $GOLANG_18_VERSION && rm -rf /tmp/* && \ 
-    goenv global $GOLANG_18_VERSION && \
+RUN goenv install $GOLANG_20_VERSION && rm -rf /tmp/* && \ 
+    goenv global $GOLANG_20_VERSION && \
     go env -w GO111MODULE=auto
 
 RUN go get -u github.com/golang/dep/cmd/dep
